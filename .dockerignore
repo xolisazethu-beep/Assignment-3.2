@@ -1,0 +1,19 @@
+# Build artifacts — rebuilt inside the image, must not leak host binaries in.
+bin/
+obj/
+**/bin/
+**/obj/
+
+# Test project: not needed to run the API, and dragging it in would pull test
+# packages into the build context.
+CareerHub.Api.Tests/
+
+# VCS / IDE / local-only files.
+.git/
+.vs/
+*.user
+appsettings.*.Local.json
+
+# Logs and docs — irrelevant to the runtime image.
+*.log
+*.md

@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="API.Tests/API.Tests.csproj" />
+  <Project Path="CareerHub.Api.csproj" />
+  <Project Path="CareerHub.Api.Tests/CareerHub.Api.Tests.csproj" />
+</Solution>

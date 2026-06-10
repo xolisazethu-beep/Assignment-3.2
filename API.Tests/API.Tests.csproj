@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <!-- The xUnit analyzers flag FluentAssertions-style asserts as "use Assert.X";
+         we deliberately mix both styles (brief requirement), so silence that rule. -->
+    <NoWarn>$(NoWarn);xUnit2017;xUnit2013</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Test runner + xUnit (versions pinned to the same line the existing
+         CareerHub.Api.Tests project uses, all net10.0-compatible). -->
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+
+    <!-- Mocking + assertions. FluentAssertions pinned to 7.2.0: the 8.x line moved
+         to a commercial licence, 7.x is the last Apache-2.0 release. -->
+    <PackageReference Include="NSubstitute" Version="5.3.0" />
+    <PackageReference Include="FluentAssertions" Version="7.2.0" />
+
+    <!-- Integration: spin up the real API in-process. -->
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.8" />
+
+    <!-- Repository: real Postgres in a throwaway container + real migrations. -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0" />
+    <PackageReference Include="Testcontainers.PostgreSql" Version="4.3.0" />
+    <PackageReference Include="Npgsql" Version="10.0.0" />
+    <PackageReference Include="Respawn" Version="6.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- xUnit reads this from the output dir to disable collection parallelism. -->
+    <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CareerHub.Api.csproj" />
+  </ItemGroup>
+
+</Project>

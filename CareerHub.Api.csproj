@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>CareerHub.Api</RootNamespace>
+    <AssemblyName>CareerHub.Api</AssemblyName>
+  </PropertyGroup>
+
+  <!-- Both test projects live under this Web-SDK project's directory, whose default
+       glob would otherwise compile their .cs files into the API assembly (duplicate
+       Program.cs / service / DTO collisions). Exclude them so only the API's own
+       sources are compiled. (The old careerhub-api/, temp-3-1/ and ConferenceBookingAPI/
+       working clones that used to sit here have been removed.) -->
+  <ItemGroup>
+    <Compile Remove="CareerHub.Api.Tests/**/*.cs" />
+    <Content Remove="CareerHub.Api.Tests/**" />
+    <None Remove="CareerHub.Api.Tests/**" />
+    <EmbeddedResource Remove="CareerHub.Api.Tests/**" />
+
+    <Compile Remove="API.Tests/**/*.cs" />
+    <Content Remove="API.Tests/**" />
+    <None Remove="API.Tests/**" />
+    <EmbeddedResource Remove="API.Tests/**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Asp.Versioning.Mvc" Version="10.0.0" />
+    <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="10.0.0" />
+    <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="9.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.5.0" />
+  </ItemGroup>
+
+</Project>

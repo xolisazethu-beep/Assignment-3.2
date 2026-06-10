@@ -1,0 +1,58 @@
+name: CareerHub CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    # This exact name is what branch protection requires as a status check.
+    name: Build and Test CareerHub API
+    runs-on: ubuntu-latest
+
+    # The integration tests boot the REAL API against a REAL database (the brief
+    # keeps ConfigureTestServices empty on purpose). The brief's skeleton workflow
+    # had no database, so the integration suite could never go green on it — the
+    # root-cause fix is to give CI a Postgres, NOT to add continue-on-error.
+    # Mapped to host port 5544 so it matches appsettings.Testing.json (and the dev
+    # profile) with no override needed. The repository tests don't use this service:
+    # Testcontainers starts its own throwaway postgres:16 via the runner's Docker.
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password123
+          POSTGRES_DB: CareerHub24
+        ports:
+          - 5544:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Test
+        run: dotnet test --no-build --configuration Release --verbosity normal --logger "trx;LogFileName=test-results.trx" --collect:"XPlat Code Coverage"
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: '**/test-results.trx'

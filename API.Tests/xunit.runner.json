@@ -1,0 +1,7 @@
+{
+  "$schema": "https://xunit.net/schema/current/xunit.runner.schema.json",
+
+  "// parallelization": "The repository tests start a Testcontainers postgres:16 while the integration tests boot the real API. Run in parallel, the container lifecycle and the in-process host boot contend for Docker/CPU on a cold start and the repository class can fail intermittently. Serialising test collections removes that race and makes the suite deterministic (it must pass twice in a row). The cost is a slightly longer wall-clock run.",
+  "parallelizeAssembly": false,
+  "parallelizeTestCollections": false
+}

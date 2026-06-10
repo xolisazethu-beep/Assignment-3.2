@@ -1,0 +1,9 @@
+bin/
+obj/
+*.user
+.vs/
+appsettings.*.Local.json
+
+# Large noisy run dump (run0.log / run100.log are kept as Part 7 proof captures).
+run.log
+*.log

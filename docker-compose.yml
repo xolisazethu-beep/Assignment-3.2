@@ -1,0 +1,46 @@
+services:
+  db:
+    image: postgres:17
+    container_name: careerhub24-pg
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: CareerHub24
+    ports:
+      # Host 5544 -> container 5432, matching appsettings.Development.json.
+      - "5544:5432"
+    volumes:
+      - careerhub24_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d CareerHub24"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: careerhub24-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        # Don't start the API until Postgres reports healthy — the app runs
+        # migrations + seed on startup and would crash against a cold DB.
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      # Override the connection string to reach Postgres over the compose
+      # network: host is the service name `db`, port is the container port 5432
+      # (NOT the 5544 host mapping). __ maps to the ConnectionStrings: section.
+      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=CareerHub24;Username=postgres;Password=password123;Minimum Pool Size=1;Maximum Pool Size=10"
+      # Throwaway local signing key (>= 32 chars); never used outside this stack.
+      Jwt__Key: "dev-only-careerhub-signing-key-change-me-please-32+chars"
+    ports:
+      # Host 8080 -> container 8080. Scalar UI at http://localhost:8080/scalar/v1
+      - "8080:8080"
+
+volumes:
+  careerhub24_pgdata:
