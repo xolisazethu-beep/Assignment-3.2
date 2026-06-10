@@ -1,4 +1,4 @@
-# CareerHub API — Assignment 3.1
+# CareerHub API — Assignment 3.2
 
 **REST API Maturity: CORS, Pagination, Filtering, PATCH, Versioning, ETags & Rate Limiting**
 
